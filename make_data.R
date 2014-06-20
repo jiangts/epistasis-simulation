@@ -53,7 +53,7 @@ int_adj <- get.var.adj.matrix(interactions, n_v)
 #### the theoretical step!!! ####
 ### manipulating the adjacency matrix to create "overall effects"
 #int_adj <- ginv(diag(n_v) - int_adj) - diag(n_v)
-int_adj <- int_adj + int_adj %^% 2 + int_adj %^% 3 - (diag(n_v) * (int_adj %^% 2))
+int_adj <- int_adj + int_adj %^% 2
 
 #############################################
 ### Define the main effects:
