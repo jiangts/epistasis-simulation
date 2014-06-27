@@ -14,6 +14,7 @@ source("helper_fn.R")
 get.basic.params <- function() #fn only used for local scope
 {
   source("tests/3v3p.R")
+  #source("tests/7v6p.R")
   
   return(list("n_v" = n_v, "n_p" = n_p, "n_i" = n_i, "allele_freq" = allele_freq, 
               "int_list" = int_list, "ME_betas" = ME_betas))
