@@ -54,7 +54,6 @@ hljs.initHighlightingOnLoad();
 body, td {
    font-family: sans-serif;
    background-color: white;
-   font-size: 13px;
 }
 
 body {
@@ -542,7 +541,7 @@ __TODO: there is currently a problem with delta matrix $\boldsymbol{I}$ generati
 ## [4,] -0.01671  0.35400  0.10300 0.0000000
 </code></pre>
 
-<p>We see that the results in the solution vector (called <code>par</code>, for the parameter vector) is quite similar for BFGS and Nelder Mead. This is reassuring as BFGS is a gradient method (and its performance generally depends on the initial guess), whereas Nelder-Mead is a global search method whose ability to find a minimum is less dependent on the intialization point. Thus, our method can show us with some confidence where the global minimum is.</p>
+<!-- p>We see that the results in the solution vector (called <code>par</code>, for the parameter vector) is quite similar for BFGS and Nelder Mead. This is reassuring as BFGS is a gradient method (and its performance generally depends on the initial guess), whereas Nelder-Mead is a global search method whose ability to find a minimum is less dependent on the intialization point. Thus, our method can show us with some confidence where the global minimum is.</p -->
 
 <p>Furthermore, we see that our method has done well in finding the global minimum in this case, as the output matrices are very close to the original seeded interaction matrix.</p>
 
