@@ -54,6 +54,23 @@ create.genotype.population = function(n_v, p, n_i)
 }
 
 ##################################################
+# prec: take arbitrary mat. M and route length k
+# postc: return adj. mat. of Hamiltonian paths of length k
+##################################################
+
+hamiltonian.len = function(M, k)
+{
+  if(k-1 == 0) { return(M) }
+  out <- M
+  for(i in 1:(k-1))
+  {
+    out <- out %*% M
+    diag(out) <- 0
+  }
+  return(out)
+}
+
+##################################################
 # prec: take interaction matrix A 
 # postc: return interaction matrix I
 ##################################################
@@ -71,8 +88,9 @@ get.I.from.A = function(A)
     {
       combo <- combos[i,]
       active_vars <- A[combo,combo]
-      routes <- active_vars %^% (k-1) #routes of length k-1
-      diag(routes) <- 0
+      #routes <- active_vars %^% (k-1) #routes of length k-1
+      #diag(routes) <- 0
+      routes <- hamiltonian.len(active_vars, k-1)
       delta_row <- colSums(routes) 
       deltas[i,combo] <- delta_row
     }
@@ -101,14 +119,14 @@ get.betas.from.network = function(A, ME)
 # postc: return squared error cost
 ##################################################
 
-#TODO: poor coding; grabbing n_v and ME_betas from global scope
+#TODO: poor coding; grabbing n_v and solve.betas from global scope
 cost_fn <- function(guess)
 { 
   #shape into matrix and insert diagonal of 0's
   A <- reshape.with.diag(guess, n_v)
   betas.guess <- get.betas.from.network(A, solve.betas[2:(1+n_v),]) #nice code reusage!...
   
-  return(sum((betas - betas.guess)^2))
+  return(sum((solve.betas - betas.guess)^2))
 }
 
 ##################################################
@@ -131,22 +149,37 @@ reshape.with.diag <- function(unr, s)
 
 bfgs = function()
 {
-  res <- optim(rep(.5,6), cost_fn, NULL, method = "BFGS")
+  res <- optim(rep(.5, n_v^2-n_v), cost_fn, NULL, method = "BFGS")
   return(res)
 }
 
 nelder.mead = function()
 {
-  res <- optim(c(.1,.2,.3,.4,.5,.6), cost_fn, method = "Nelder-Mead",
+  res <- optim((1:(n_v^2-n_v) * .1), cost_fn, method = "Nelder-Mead",
                control = list(maxit = 20000))
   return(res)
 }
 
 sim.anneal = function()
 {
-  res <- optim(rep(.5,6), cost_fn, method = "SANN",
-               control = list(maxit = 20000, temp = 20, parscale = rep(.5,6)))
+  res <- optim(rep(.5, n_v^2-n_v), cost_fn, method = "SANN",
+               control = list(maxit = 20000, temp = 20, parscale = rep(.5, n_v^2-n_v) ))
   return(res)
 }
 
-#library("minpack.lm")
+library("minpack.lm")
+lma_cost_fn <- function(guess)
+{ 
+  #shape into matrix and insert diagonal of 0's
+  A <- reshape.with.diag(guess, n_v)
+  betas.guess <- get.betas.from.network(A, solve.betas[2:(1+n_v),]) #nice code reusage!...
+  
+  return(solve.betas - betas.guess)
+}
+
+lev.marq = function()
+{
+  nls.out <- nls.lm(rep(.5, n_v^2-n_v), lower=NULL, upper=NULL, lma_cost_fn, jac = NULL,
+                control = nls.lm.control())
+  return(nls.out)
+}

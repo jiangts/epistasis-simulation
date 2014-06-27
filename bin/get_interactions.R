@@ -11,6 +11,7 @@ solve.betas <- ginv(X) %*% Y
 # note on code optimization: The slow stuff is everything touched by cost_fn,
 # which will be run many many times. Look there for speed improvements
 solve.bfgs <- bfgs()
+solve.lev.marq <- lev.marq()
 solve.nelder.mead <- nelder.mead()
 solve.sim.anneal <- sim.anneal()
 
