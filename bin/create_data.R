@@ -13,23 +13,7 @@ source("helper_fn.R")
 #############################################
 get.basic.params <- function() #fn only used for local scope
 {
-  #n_v <- 4 #num variant
-  #n_p <- 5 #num pheno
-  #n_i <- 1000 #num indiv
-  #allele_freq <- 0.50 #50% allelic frequency.
-  #
-  #int_list <- rbind(c(2,1,0.4), c(2,4,0.1), c(4,2,0.3), c(3,4,1), c(2,3,.07)) #list of interactions
-  #ME_betas <- matrix(c(3, 3.5, 4, 3.5, 4, 3, 4, 3, 3.5, 1, 3, -2, -3, .4, 1, -3, -1, -2, 1, 2), 
-  #                   nrow = n_v, ncol = n_p) #matrix of main effects
-
-  n_v <- 3 #num variant
-  n_p <- 3 #num pheno
-  n_i <- 1000 #num indiv
-  allele_freq <- 0.50 #50% allelic frequency.
-  
-  int_list <- rbind(c(1,2,0.4), c(2,1,0.1), c(2,3,0.3)) #list of interactions
-  ME_betas <- matrix(c(3, 3.5, 4, 3.5, 4, 3, 4, 3, 3.5), 
-                     nrow = n_p, ncol = n_v) #matrix of main effects
+  source("tests/3v3p.R")
   
   return(list("n_v" = n_v, "n_p" = n_p, "n_i" = n_i, "allele_freq" = allele_freq, 
               "int_list" = int_list, "ME_betas" = ME_betas))
