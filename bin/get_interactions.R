@@ -1,4 +1,5 @@
-setwd("/Users/mingya/JAX/simulation/v1.3/bin")
+#setwd("/Users/mingya/JAX/simulation/v1.3/bin")
+setwd("/Users/s-jiang/Desktop/epistasis-simulation-master/bin")
 
 source("create_data.R")
 

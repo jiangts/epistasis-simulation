@@ -71,6 +71,21 @@ hamiltonian.len = function(M, k)
 }
 
 ##################################################
+# desc: store all combos into a global var 
+# purp: this will hopefully save time on optim
+##################################################
+
+create.combos <- function(n_v)
+{
+  out <- list()
+  for(k in 1:n_v)
+  {
+    out[[k]] <- t(combn(c(1:n_v), k))
+  }
+  return(out)
+}
+
+##################################################
 # prec: take interaction matrix A 
 # postc: return interaction matrix I
 ##################################################
@@ -80,9 +95,11 @@ get.I.from.A = function(A)
   n_v <- nrow(A)
   I <- diag(n_v+1)
   
+  if(!exists("all.combos")){all.combos <<- create.combos(n_v)}
   for(k in 2:n_v)
   {
-    combos <- t(combn(c(1:n_v), k))
+    #combos <- t(combn(c(1:n_v), k))
+    combos <- all.combos[[k]]
     deltas <- matrix(0, nrow(combos), n_v)
     for(i in 1:nrow(combos))
     {
