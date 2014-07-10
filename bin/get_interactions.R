@@ -1,5 +1,4 @@
-#setwd("/Users/mingya/JAX/simulation/v1.3/bin")
-setwd("/Users/s-jiang/Desktop/epistasis-simulation-master/bin")
+setwd("/Users/mingya/JAX/simulation/v1.4/bin")
 
 source("create_data.R")
 
@@ -16,7 +15,11 @@ solve.lev.marq <- lev.marq()
 solve.nelder.mead <- nelder.mead()
 solve.sim.anneal <- sim.anneal()
 
-solve.deltas <- reshape.with.diag(solve.bfgs$par, n_v)
+solve.bfgs.deltas <- reshape.with.diag(solve.bfgs$par, n_v)
+solve.lev.marq.deltas <- reshape.with.diag(solve.lev.marq$par, n_v)
+solve.nelder.mead.deltas <- reshape.with.diag(solve.nelder.mead$par, n_v)
+solve.sim.anneal.deltas <- reshape.with.diag(solve.sim.anneal$par, n_v)
+
 signif(solve.deltas, digits=3)
 
 #############################################

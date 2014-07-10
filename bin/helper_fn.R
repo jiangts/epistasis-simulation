@@ -121,13 +121,18 @@ get.I.from.A = function(A)
 # postc: return full beta matrix
 ##################################################
 
-get.betas.from.network = function(A, ME) 
+get.fake.betas.from.network = function(A, ME) 
 {
-  b0 <- matrix(1, 1, ncol(ME))
+  b0 <- matrix(1, 1, ncol(ME)) #assumes all beta 0 coeff are 1!!!
   I <- get.I.from.A(A)
   return(I %*% rbind(b0, ME))
 }
 
+get.betas.from.network = function(A, ME) 
+{
+  I <- get.I.from.A(A)
+  return(I %*% ME)
+}
 
 ### get_interactions.R's fns
 
@@ -137,11 +142,20 @@ get.betas.from.network = function(A, ME)
 ##################################################
 
 #TODO: poor coding; grabbing n_v and solve.betas from global scope
-cost_fn <- function(guess)
+cost_fn.fake <- function(guess)
 { 
   #shape into matrix and insert diagonal of 0's
   A <- reshape.with.diag(guess, n_v)
   betas.guess <- get.betas.from.network(A, solve.betas[2:(1+n_v),]) #nice code reusage!...
+  
+  return(sum((solve.betas - betas.guess)^2))
+}
+
+cost_fn <- function(guess)
+{ 
+  #shape into matrix and insert diagonal of 0's
+  A <- reshape.with.diag(guess, n_v)
+  betas.guess <- get.betas.from.network(A, solve.betas[1:(n_v+1),]) #nice code reusage!...
   
   return(sum((solve.betas - betas.guess)^2))
 }
@@ -185,11 +199,20 @@ sim.anneal = function()
 }
 
 library("minpack.lm")
-lma_cost_fn <- function(guess)
+lma_cost_fn.fake <- function(guess)
 { 
   #shape into matrix and insert diagonal of 0's
   A <- reshape.with.diag(guess, n_v)
   betas.guess <- get.betas.from.network(A, solve.betas[2:(1+n_v),]) #nice code reusage!...
+  
+  return(solve.betas - betas.guess)
+}
+
+lma_cost_fn <- function(guess)
+{ 
+  #shape into matrix and insert diagonal of 0's
+  A <- reshape.with.diag(guess, n_v)
+  betas.guess <- get.betas.from.network(A, solve.betas[1:(n_v+1),]) #nice code reusage!...
   
   return(solve.betas - betas.guess)
 }
