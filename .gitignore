@@ -1,3 +1,6 @@
 .Rproj.user
 .Rhistory
 .RData
+.hist
+epistasis-simulation.Rproj
+*.pyc
