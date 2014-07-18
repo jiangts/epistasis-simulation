@@ -111,6 +111,10 @@
             <span>Chose variants to analyze based off of a </span>
             <code>cape</code>
             <span> analysis. Ran the analysis, but with a small number of permutations (only 3)</span>
+        <p>That means, we will have $\sum_{k=2}^{n}{n \choose k}k$ equations. By absorption, we know that <br />
+        $$
+        {n \choose k}k = \frac{n!}{k!(n-k)!}k = \frac{n!}{(k-1)!(n-1-(k-1))!} = {n-1 \choose k-1}n.
+        $$</p>
         </p>
     </li>
 
@@ -159,6 +163,15 @@
 			});
 
 		</script>
+
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/x-mathjax-config">  
+    MathJax.Hub.Config({  
+        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+    </script>
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 
 	</body>
 </html>
