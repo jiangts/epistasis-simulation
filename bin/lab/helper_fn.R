@@ -154,5 +154,5 @@ infer.m = function(D){
   I = get.I.from.A(reshape.with.diag(D, n_v))
   
   #total variant activity
-  As = colSums(I)[-1] #column sums and remove first entry
+  tot.activity = colSums(I)[-1] #column sums and remove first entry
 }
