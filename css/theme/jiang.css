@@ -39,7 +39,7 @@ body {
   color: #383d3d;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 0.9em;
-  letter-spacing: 0.02em;
+  /*letter-spacing: 0.02em;*/
   text-transform: none;
   text-shadow: none; }
 
