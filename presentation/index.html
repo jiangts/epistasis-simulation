@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <title>reveal.js - The HTML Presentation Framework</title>
+    <meta content="A framework for easily creating beautiful presentations using HTML" name="description">
+    <meta content="Hakim El Hattab" name="author">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"name="viewport">
+    <link href="css/reveal.min.css" rel="stylesheet" type="text/css">
+    <link href="css/theme/default.css" id="theme" rel="stylesheet" type="text/css">
+	<!-- For syntax highlighting -->
+    <link href="lib/css/zenburn.css" rel="stylesheet" type="text/css">
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+
+    <script type="text/javascript">
+            if( window.location.search.match( /print-pdf/gi ) ) {
+                var link = document.createElement( 'link' );
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = 'css/print/pdf.css';
+                document.getElementsByTagName( 'head' )[0].appendChild( link );
+            }
+    </script>
+    <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+	<style>
+	li { padding: 8px !important;}
+	</style>
+</head>
+
+<body>
+    <div class="reveal">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+        <!-- CONTENT FROM SLIDES START -->
+
+<div class="slides">
+    <section class="" data-id="2bf28a6f94a00705b335d219845b4be1">
+		<h2>Multivariate "cape"</h2>
+
+		<div>
+			<br>
+			<br>
+		</div>
+
+		<div>Allan Jiang</div>
+
+		<div>July 22, 2014</div>
+
+		<div>Carter Lab Meeting</div>
+	</section>
+    <section class="" data-id="5cc5c7e9cd4c595767fd0b3f5a567fcb">
+		<h2>Detecting Epistasis</h2>
+
+		<div>
+			<br>
+		</div>
+
+		<div style="text-align: left;">
+			<ul>
+				<li style="font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">
+				<b>Goal:&nbsp;</b>We want to find gene-gene interactions for complex traits in
+					a dataset of genotype and phenotype data</li>
+			</ul>
+
+			<div>
+				<br>
+			</div>
+
+			<ul>
+				<li class="fragment" data-fragment-index="0" style="font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">
+				<b>Current Solution:</b>&nbsp;<code>cape</code>&nbsp;is a statistical method
+					that uses linear modeling to address this problem</li>
+			</ul>
+
+			<div>
+				<br>
+			</div>
+
+			<ul>
+				<li class="fragment" data-fragment-index="1" style="font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">
+				<b>Problem:&nbsp;</b>Unfortunately, current&nbsp;<span style="font-family: monospace; font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">cape</span>&nbsp;analysis<span style="font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">&nbsp;may provide an incomplete model to describe these interactions</span>
+    </li>
+			</ul>
+		</div>
+	</section>
+    <section class="" data-id="73148c970731612544a19e3e674c68ff">
+		<h2>Presentation Overview:</h2>
+
+		<div>
+			<br>
+		</div>
+
+		<div style="text-align: left;">
+			<div>
+    <span>1. Mathematical look at current <code>cape</code> model</span>
+			</div>
+
+			<div>
+				<br>
+			</div>
+
+			<div>
+    <span>2. How I extended the model</span>
+			</div>
+
+			<div>
+				<br>
+			</div>
+
+			<div>
+    <span>3. My analysis on the "little cross" dataset</span>
+			</div>
+
+			<div>
+				<br>
+			</div>
+
+			<div>
+    <span>4. Next steps...</span>
+			</div>
+		</div>
+	</section>
+    <section class="stack" data-id="0fcf1b598e20ae9bf800227084c2b47c">
+		<section class="" data-id="50a23a0ab9ac19b43e1d4480295d0f2c">
+			<h2>
+    <b>Section 1</b>
+    <br>
+				Current <code>cape</code> model</h2>
+			<br>
+		</section>
+
+		<section class="" data-id="3a570defb70406f18f4d2252f5f9d3d5">
+			<h2>An Additive Model</h2>
+
+			<div>
+    <br>
+			</div>
+
+			<div style="text-align: left;">
+				<ul>
+					<li>
+    <b>Key assumption</b> that allows us to go from correlation to
+						causality</li>
+				</ul>
+
+				<ul>
+					<li>Encode genotypes as 0, 1, and 2</li>
+
+					<li>Perform linear regression</li>
+				</ul>
+
+				<div style="padding:20px;">$$y \sim \beta_0 + \beta_1x_1 + \epsilon$$</div>
+
+				<div>
+					<ul>
+						<li>A significant \(\beta_1\) value indicates correlation between marker and
+							phenotype</li>
+					</ul>
+
+					<ul>
+						<li>Biologically, influence is from genotype to phenotype.</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<section class="" data-id="4c08cf9e03c49fd8bf17ad49105238a8">
+			<h2>Is it reasonable?</h2>
+			<iframe src="https://www.biostat.wisc.edu/~kbroman/D3/cistrans/" style="position: relative;left: -130px; width: 1240px; height: 700px; max-height: none; max-width: none;position: 			relative;left: -110px;">
+</iframe>
+		</section>
+
+		<section class="" data-id="c73f31975acd31a406952968485fccd5">
+			<h2>Pairscan</h2>
+
+			<div style="text-align: left;">
+<br>
+			</div>
+
+			<div style="text-align: left;">This gives us combined variant effects. Perform
+				the regression</div>
+
+			<div style="text-align: left; padding:20px">
+				$$y \sim \beta_0 + \beta_1x_1 + \beta_1x_2 + \beta_{12}x_1x_2 + \epsilon$$</div>
+
+			<div style="text-align: left;">Then, a significant&nbsp;\(\beta_{12}\)
+				indicates the degree to which phenotype changes are explained by a strong
+			<i>combined</i>&nbsp;variant effect.</div>
+		</section>
+
+		<section class="" data-id="72c26b59b5891b05d065870359596e5e">
+			<h2>Pairscan</h2>
+
+			<div style="text-align: left;">
+<br>
+				But how to convert a combined effect into variant-to-variant effects?<br>
+</div>
+
+			<h2>
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/526607/pasted-from-clipboard.png" style="color: rgb(0, 0, 0); width: 343.2581745574043px; height: 275.89214442324857px; max-height: none; max-width: none;">&nbsp;
+&nbsp;<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/526634/pasted-from-clipboard.png" style="color: rgb(0, 0, 0); width: 375.8477304383218px; height: 304.8773177083422px; max-height: none; max-width: none;">
+</h2>
+		</section>
+
+		<section class="" data-id="f65fea28774daf7da6f5551e3c7e6a83">
+			<h2>Mathematics</h2>
+
+			<div style="text-align: left;">The Pairscan: Let</div>
+
+			<div>
+<br>
+			</div>
+
+			<div>$$ \scriptsize 
+				\boldsymbol{Y} = 
+				\left[ \begin{array}{cc} 
+				1.5 &amp; -0.3 \\
+				1.2 &amp; -0.4 \\ 
+				1.1 &amp; -0.5 \\ 
+				1.3 &amp; -0.3 \\ 
+				\vdots &amp; \vdots
+				\end{array}\right] 
+			
+				\hspace{10mm} 
+				\boldsymbol{X} = 
+				\left[ \begin{array}{cccc} 
+				1 &amp; 0 &amp; 0 &amp; 0 \\ 
+				1 &amp; 0 &amp; 1 &amp; 0 \\ 
+				1 &amp; 1 &amp; 0 &amp; 0 \\ 
+				1 &amp; 1 &amp; 1 &amp; 1 \\ 
+				\vdots &amp; \vdots &amp; \vdots &amp; \vdots
+				\end{array}\right] 
+			
+				\hspace{10mm} 
+			
+				\boldsymbol{B} = 
+				\left[ \begin{array}{cc}
+				\beta_0^1 &amp; \beta_0^2 \\ 
+				\beta_1^1 &amp; \beta_1^2 \\ 
+				\beta_2^1 &amp; \beta_2^2 \\ 
+				\beta_{12}^1 &amp; \beta_{12}^2 
+				\end{array}\right] $$
+			</div>
+
+			<div>
+<br>
+			</div>
+
+			<div class="fragment" data-fragment-index="0" style="text-align: left;">Then,
+	we want to find the optimal beta matrix for the regression</div>
+
+		<div class="fragment" data-fragment-index="0">
+			$$\boldsymbol{Y} \sim \boldsymbol{X} \cdot \boldsymbol{B} + \epsilon$$</div>
+		</section>
+
+		<section class="" data-id="a55412a551fcae9bf98a83e25d8ade9f">
+			<h2>Mathematics</h2>
+
+			<div style="text-align: left;">Suppose we can include the variant-to-variant
+	effects (which disturb additivity) <b>before</b>&nbsp;we perform the
+	regression.</div>
+
+			<div>
+<br>
+			</div>
+
+			<div class="fragment" data-fragment-index="0">
+				$$ 
+				\scriptsize 
+				\boldsymbol{X}\cdot \boldsymbol{I} = 
+				\left[ \begin{array}{cccc} 
+				1 &amp; 0 &amp; 0 &amp; 0 \\ 
+				1 &amp; 0 &amp; 1 &amp; 0 \\ 
+				1 &amp; 1 &amp; 1 &amp; 1 \\ 
+				\vdots &amp; \vdots &amp; \vdots &amp; \vdots 
+				\end{array}\right] 
+				\cdot 
+				\left[ \begin{array}{ccc} 
+				1 &amp; 0 &amp; 0 \\ 
+				0 &amp; 1 &amp; 0 \\ 
+				0 &amp; 0 &amp; 1 \\ 
+				0 &amp; \delta_{21} &amp; \delta_{12} 
+				\end{array}\right] 
+				$$
+				<br>
+				$$ 
+				\scriptsize
+				 = \left[ \begin{array}{ccc} 
+				 1 &amp; 0 &amp; 0 \\ 
+				 1 &amp; 0 &amp; 1 \\ 
+				 1 &amp; 1+\delta_{21} &amp; 1+\delta_{12} \\ 
+				 \vdots &amp; \vdots &amp; \vdots 
+				 \end{array}\right] 
+				 $$
+			 </div>
+		</section>
+
+		<section class="" data-id="270ac18aabe7375d5c9a8e1772b7963d">
+			<h2>Mathematics</h2>
+
+			<div style="text-align: left;">Now, we may "reparameterize" the model. Let</div>
+
+			<div>
+<br>
+			</div>
+
+			<div>$$ \scriptsize \boldsymbol{B_{ME}} = \left[ \begin{array}{cc} \beta_0^1
+	&amp; \beta_0^2 \\ \beta_1^1 &amp; \beta_1^2 \\ \beta_2^1 &amp; \beta_2^2
+	\end{array}\right] $$
+
+			<div style="text-align: left;">
+<br>Then,<br>
+<br>
+</div>
+				$$ 
+				\scriptsize 
+				\begin{array}{l} 
+				\boldsymbol{Y} \sim \boldsymbol{X} \cdot \boldsymbol{I} \cdot \boldsymbol{B_{ME}} + \epsilon \\ 
+				\boldsymbol{Y} \sim \boldsymbol{X} \cdot \boldsymbol{B} + \epsilon 
+				\end{array} 
+				\implies
+				\boldsymbol{I} \cdot \boldsymbol{B_{ME}} = \boldsymbol{B} 
+				$$
+			</div>
+		</section>
+
+		<section class="" data-id="d584970eedaa5ac182f248fb1622c8ca">
+			<h2>Reparameterization</h2>
+
+			<div style="left: -75px;position: relative;">
+<br>
+				$$ \scriptsize 
+				\boldsymbol{I} \cdot \boldsymbol{B_{ME}} 
+				= 
+				\left[ \begin{array}{ccc} 
+				1 &amp; 0 &amp; 0 \\ 
+				0 &amp; 1 &amp; 0 \\ 
+				0 &amp; 0 &amp; 1 \\ 
+				0 &amp; \delta_{21} &amp; \delta_{12} 
+				\end{array}\right] 
+				\cdot 
+				\left[\begin{array}{cc} 
+				\beta_0^1 &amp; \beta_0^2 \\ 
+				\beta_1^1 &amp; \beta_1^2 \\
+				\beta_2^1 &amp; \beta_2^2 
+				\end{array}\right] 
+				= 
+				\left[ 
+				\begin{array}{cc}
+				\beta_0^1 &amp; \beta_0^2 \\ 
+				\beta_1^1 &amp; \beta_1^2 \\ 
+				\beta_2^1 &amp; \beta_2^2 \\ 
+				\beta_1^1\delta_{21}+\beta_2^1\delta_{12} &amp; \beta_1^2\delta_{21} + \beta_2^2\delta_{12} 
+				\end{array}\right] 
+				$$
+			</div>
+
+			<div>
+<br>
+				$$ \scriptsize 
+				\implies \begin{array}{l} 
+				\beta_{12}^1 = \beta_1^1\delta_{21}+\beta_2^1\delta_{12} \\ 
+				\beta_{12}^2 = \beta_1^2\delta_{21} + \beta_2^2\delta_{12} 
+				\end{array} 
+				$$
+			</div>
+
+			<div style="text-align: left; font-size:30px">
+<br>
+				Now, we can solve for activity changes \(\delta\) in terms of the coefficients
+				of our pairscan.
+			</div>
+		</section>
+
+		<section class="" data-id="7f48083a60ca24e9ac7dd62b914774e5">
+			<h2>Creating a network</h2>
+
+			<div style="text-align: left;">Determining influence variables from activity
+				variables:
+			</div>
+
+			<div>
+				<br>
+				$$ 
+				\begin{array}{l} 
+				\delta_{21} = m_{21}(1 + \delta_{12}) \\ 
+				\delta_{12} = m_{12}(1 + \delta_{21}) 
+				\end{array} 
+				$$
+				<br>
+			</div>
+			<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/526820/normal_cape_network.png" style="width: 794.5765750809998px; height: 354.2581745574043px; max-height: none; max-width: none;">
+		</section>
+	</section>
+<section class="stack" data-id="ca9c6b6849196390345f68f704589e2d">
+		<section class="" data-id="189e2cd60d70db8358dadf528a3e258c">
+			<h2>
+<b>Section 2</b>
+<br>
+				Extending the Model
+			</h2>
+			<br>
+		</section>
+
+		<section class="" data-id="1db838cc5a8f5ee0349e7aea5f23e726">
+			<h2>A more complete model</h2>
+			<div style="text-align:left;">
+				<ul>
+					<li>
+<span>The limitation of</span> <code>cape</code> <span>is that the model
+						only considers two variants at a time without regard to other
+						variants.</span>
+					</li>
+
+					<li class="fragment" data-fragment-index="0">
+<span>A more complete model
+						includes multiple variants. This could help to:</span>
+					</li>
+
+					<ul>
+						<li class="fragment" data-fragment-index="0">
+<span>detect false positive
+							edges</span>
+						</li>
+
+						<li class="fragment" data-fragment-index="0">
+<span>detect hidden edges</span>
+						</li>
+					</ul>
+				</ul>
+			</div>
+		</section>
+
+		<section class="" data-id="9ef3fc5c097601554ae66042881da494">
+			<h2>Including more variants</h2>
+
+			<div style="text-align: left;">
+<br>
+				How do you model interactions among multiple variants?
+			</div>
+
+			<div style="text-align: left;">
+<br>
+			</div>
+			<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/526947/three-var-true-influence.png" style="width: 390.16074301606704px; height: 340.8643238985463px; max-height: none; max-width: none;">
+		</section>
+
+		<section class="" data-id="5d079c9e6402c5eafe5d5363277061f6">
+			<h2 style="font-style: normal; font-variant: normal;">Including more
+				variants
+			</h2>
+
+			<div style="text-align: left;">
+<br>
+				How about this perspective?
+			</div>
+
+			<div>
+				$$ 
+				\scriptsize 
+				\begin{array}{c c c c c c c} 
+				x_1 &amp; x_2 &amp; x_3 &amp; &amp; x_1 &amp; x_2 &amp; x_3 \\ \hline 
+				1 &amp; 0 &amp; 1 &amp; \longrightarrow &amp; 1 + \delta_{31} &amp; 0 &amp; 1 + \delta_{13} \\ \hline 
+				1 &amp; 1 &amp; 1 &amp; \longrightarrow &amp; 
+					\begin{array}{c} 
+						1 + \delta_{21} + \delta_{31} \\ 
+						+ \delta_{231} + \delta_{321} 
+					\end{array} &amp; 
+					\begin{array}{c} 
+						1 + \delta_{12} + \delta_{32} \\ 
+						+ \delta_{132} + \delta_{312} 
+					\end{array} &amp; 
+					\begin{array}{c} 
+						1 + \delta_{13} + \delta_{23} \\ 
+						+ \delta_{123} + \delta_{213} 
+					\end{array} 
+				\end{array} 
+				$$
+			</div>
+
+			<div style="text-align: left;">
+				<div style="float:left;">
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/526947/three-var-true-influence.png" style="height: 250px;">
+				</div>
+
+				<div class="fragment" data-fragment-index="0" style="float:right; width:550px;">
+<br>
+				<br>
+				All routes of influence through <b>active</b> variants are considered!</div>
+			</div>
+		</section>
+
+		<section class="" data-id="64b4a7e1f3eda2a2ae1c2328a2b3dd2e">
+			<h2>How do we implement that?</h2>
+
+			<div style="text-align: left;">Like in cape, we need to find an interaction
+				matrix \(\boldsymbol{I}\) that will perturb our design matrix in the desired
+				fashion.
+			</div>
+
+			<div style="text-align: left;">
+<br>
+			</div>
+
+
+			<div class="fragment" data-fragment-index="0" style="text-align: left;">
+				Note: the new model requires information about all combinations of variants.
+			</div>
+
+			<div style="text-align: left;">
+<br>
+			</div>
+
+			<div class="fragment" data-fragment-index="1" style="text-align: left;">Limits
+				number of variants you can analyse – I'm currently doing 5
+				variants.
+			</div>
+		</section>
+
+		<section class="" data-id="c00a034a46b6526a1c8f43a5b92c7f58">
+			<h2>Solving for deltas</h2>
+
+			<div style="text-align: left; font-size:30px">What results is a system of
+				equations that allows us to solve for activity variables delta in terms of our
+				regression coefficients beta.<br>
+			</div>
+
+			<div>
+<br>
+				$$ 
+				\scriptsize 
+				\begin{cases} 
+				\beta_{12} = \beta_1\delta_{21} + \beta_2\delta_{12} \\ 
+				\beta_{13} = \beta_1\delta_{31} + \beta_3\delta_{13} \\ 
+				\beta_{23} = \beta_2\delta_{32} + \beta_3\delta_{23} \\ 
+				\begin{array}{l} 
+					\beta_{123} = \\ 
+					\\ 
+					\\ 
+				\end{array} 
+				\begin{array}{l} 
+					\beta_1(\delta_{21} + \delta_{31} + \delta_{231} + \delta_{321}) + \\ 
+					\beta_2(\delta_{12} + \delta_{32} + \delta_{132} + \delta_{312}) + \\ 
+					\beta_3(\delta_{13} + \delta_{23} + \delta_{123} + \delta_{213}) 
+				\end{array} 
+				\end{cases}\\ 
+				$$
+			</div>
+
+			<div style="font-size:20px;">*Looped over all phenotype coefficient
+				values
+			</div>
+
+			<div class="fragment" data-fragment-index="0" style="text-align: left; font-size:30px">
+				<ul>
+					<li>Least Squares Regression</li>
+
+					<li>Levenberg Marquardt Optimization</li>
+				</ul>
+			</div>
+		</section>
+
+		<section data-id="3dcc272edc4d775e712f8b9ec4e9cb59" class="">
+			<h2>Solving for influence variables <i>m</i>
+</h2>
+		</section>
+	</section>
+<section class="stack" data-id="76c284c5c197d9158b8e3362368d1847">
+    <section class="" data-id="de779d06729a1ba827dad095086d1247">
+		<h2 style="font-weight: bold">Section 3</h2>
+
+		<h2>Analysis on the "little cross" dataset</h2>
+	</section>
+    <section class="" data-id="0e54a229da56172f00ba0d6810b45d3e">
+        <h2>"Little Cross" Data</h2>
+<div style="text-align: left; ">
+    <ul>
+        <li>
+            <span>Sample of 2133 mice</span>
+            <br>
+        </li>
+        <li class="fragment" data-fragment-index="0">
+            <span>F2 cross of the lit mouse, which is a genetic model of Growth Hormone deficiency</span>
+            <br>
+        </li>
+        <li class="fragment" data-fragment-index="1">
+            <span>IGF1 receptor knocked out</span>
+        </li>
+        <li class="fragment" data-fragment-index="2">Marker data for 101 genotypes</li>
+        <li class="fragment" data-fragment-index="3">Phenotype data</li>
+        <ul>
+            <li class="fragment" data-fragment-index="3">Bone mineral density,</li>
+            <li class="fragment" data-fragment-index="3">Body weight,</li>
+            <li class="fragment" data-fragment-index="3">% Fat, etc.</li>
+        </ul>
+    </ul>
+</div>
+
+
+
+</section>
+        <section class="" data-id="09bfa283fb352930ad46ca15d090e8e1">
+            <h2>Strategy:</h2>
+<div style="text-align: left; ">
+    <ol>
+        <li>Use <code>cape</code> to find markers of interest</li>
+        <li>Plot <code>cape</code>'s network</li>
+        <li>Run my analysis on the same markers</li>
+        <li>Plot my results</li>
+            <li>Compare</li>
+    </ol>
+</div>
+
+</section>
+            <section class="" data-id="dd5a9b5ea815fe6549e44e542b27a40e">
+                <h2>What <code>cape</code> says</h2>
+                <div>
+                    <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/527271/pasted-from-clipboard.png" style="width: 918.971767881776px; height: 551.6603219463744px; max-height: none; max-width: none;">
+                    <br>
+                </div>
+</section>
+                <section class="" data-id="0f629ffdb0092e10273ed17dc23c3095">
+<h2>Python Network Output:</h2>
+<pre><code data-trim="" contenteditable="">&gt;&gt;&gt; net.connectivity(G)
+How many connected components?
+6
+what are the subgraphs?
+[
+    [2, 3, 38, 39, 74, 76, 13, 22, 23, 24, 25, 58, 62], 
+    [97, 99, 100, 5, 6, 7, 53, 86, 87, 59, 28, 21], 
+    [65, 9, 10, 12, 93, 94, 95], 
+    [32, 33, 50, 51, 52], 
+    [34, 83], 
+    [48, 46]
+]
+</code></pre>
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/527292/pasted-from-clipboard.png" style="max-height: none; max-width: none; position: absolute; width: 301px; height: 306px; z-index: 4; left: 29px; top: 402px;" class="absolute-element fragment" data-fragment-index="0">
+<div style="text-align: left; width: 570px; position: absolute; height: 46px; z-index: 4; left: 363px; top: 429px;" class="absolute-element fragment" data-fragment-index="1">
+<span>We focus on the network consisting of variants 32, 33, 50, 51, and 52. It is of ideal size for analysis.</span>
+</div>
+
+
+
+
+
+</section>
+                <section class="" data-id="21a69875601479c3ee7acd4237911ca1">
+                    <h2>My analysis</h2>
+<pre class="absolute-element" style="white-space: pre-line; position: absolute; width: 500px; height: 500px; z-index: 4; left: -50px; top: 170px;">
+                    <code data-trim="" contenteditable="" style="width: 100%; height: 100%; max-height:none; float:left;white-space: pre-wrap;">#===========================
+# Perform linear regression
+#===========================
+solve.betas &lt;- ginv(design) %*% Y
+
+#===========================
+# Use Levenberg-Marquardt Optimization method to reparameterize model
+# in terms of activity variables (delta)
+#===========================
+solve.lev.marq &lt;- lev.marq()
+
+#===========================
+# Create cross validation delta distribution by running the above analysis
+# on subsets of the data.
+#===========================
+CV.dist = generate.CV.distribution(design, maxerr = .002, cv.sample.frac = .6, cv.sample.size = 101)
+
+#===========================
+# Calculate p values (t-test distribution)
+#===========================
+p.values = get.p.values(CV.dist)
+</code>
+                </pre>
+<pre class="absolute-element" style="white-space: pre-line; position: absolute; width: 500px; height: 500px; z-index: 4; left: 480px; top: 170px;">
+                <code data-trim="" contenteditable="" style="width: 100%; height: 100%; max-height:none; float:right;white-space: pre-wrap;">&gt; signif(solve.betas,1)
+        ET1    ET2    ET3    ET4    ET5
+[1,]  9e-03 -2e-03  0.010  3e-03 -6e-03
+[2,] -4e-03  3e-03 -0.007 -4e-03  1e-02
+[3,] -2e-03  3e-04 -0.010 -9e-03  2e-03
+[4,]  8e-04  1e-02 -0.020  6e-04  9e-03
+[5,] -5e-03 -5e-03  0.010  5e-03 -3e-03
+[6,] -6e-03 -1e-02  0.020 -1e-03 -2e-02
+[7,] -1e-02 -1e-02  0.030  5e-03  2e-04
+[8,]  9e-03  1e-02 -0.040  7e-03 -4e-03<br>
+
+&gt; solve.lev.marq
+Nonlinear regression via the Levenberg-Marquardt algorithm
+parameter estimates: -0.30592085795328, 0.478466051199557, -0.900491479363899, -0.188714946090992, -1.20955941308885, -1.10661244812172 
+residual sum-of-squares: 0.0007612
+reason terminated: Relative error in the sum of squares is at most `ftol'.<br>
+
+&gt; signif(pretty.deltas(solve.lev.marq),2)
+      [,1]  [,2] [,3]
+[1,]  0.00 -0.90 -1.2
+[2,] -0.31  0.00 -1.1
+[3,]  0.48 -0.19  0.0<br>
+</code>
+            </pre>
+<div class="absolute-element" style="position: absolute; width: 95px; height: 46px; z-index: 4; left: 144px; top: 123px;">Code</div>
+<div class="absolute-element" style="position: absolute; width: 115px; height: 46px; z-index: 4; left: 678px; top: 123px;">Output</div>
+
+</section>
+            <section class="" data-id="d737447bb23f75def514b7a7f7c1699b">
+                <h2>Cross Validations</h2>
+<div>Example delta distributions:</div>
+<div class="absolute-element" style="position: absolute; width: 481px; height: 429px; z-index: 4; left: -7px; top: 150px;">
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/527420/pasted-from-clipboard.png">
+</div>
+<div class="absolute-element" style="position: absolute; width: 479px; height: 432px; z-index: 4; left: 485px; top: 150px;">
+<img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/527419/pasted-from-clipboard.png">
+</div>
+
+<div class="absolute-element fragment" style="position: absolute; width: 516px; height: 46px; z-index: 4; left: 223px; top: 609px;" data-fragment-index="0">They look approximately normal.</div>
+            </section>
+            <section class="" data-id="97d63ef6ec1b69b02366487e24456efb">
+<h2>Significance Testing</h2>
+<div style="text-align: left; ">
+<ul>
+    <li>
+        <span>Do I evaluate the significance of delta values against 0, or the original results?</span>
+    </li>
+    <li>
+        <span>How many cross validation samples do I run?</span>
+        <br>
+    </li>
+</ul>
+</div>
+<div style="text-align: left; ">
+<br>
+</div>
+<div style="text-align: left; ">Evaluating against 0:</div>
+<div style="text-align: left; ">
+<pre><code>&gt; signif(p.values,3)
+[1] 3.16e-01 2.32e-02 3.17e-27 1.46e-08 7.16e-54 3.10e-48</code></pre>
+</div>
+<div style="text-align: left; ">Evaluating against results from <code>solve.lev.marq</code>
+<pre><code>&gt; signif(p.values,3)
+[1] 8.95e-04 3.00e-07 1.19e-02 1.16e-03 4.85e-04 2.77e-05
+</code></pre>
+</div>
+<br>
+</section>
+        </section>
+        <section class="stack" data-id="2fa124a0d9d8640822fbf2ccc68cee66">
+            <section class="" data-id="37834ab6bbab07e4d4ef9779ac92f130">
+		<h2 style="font-weight: bold">Section 4</h2>
+
+		<h2>Future Work</h2>
+	</section>
+            <section class="" data-id="1e63c0e8bcc943de2cb2d26ce96281ea">
+                <h2>todos!</h2>
+<div style="text-align: left; ">
+    <ol>
+        <li>Complete the analysis to infer significant values of delta.</li>
+        <li>Sensitivity analysis: why do edges sometimes flip?</li>
+        <li>Compare my network/results to <code>cape</code>'s results.</li>
+    </ol>
+</div>
+</section>
+            </section>
+            <section class="" data-id="a059d995878458f01639462e98979608">
+                <h2>References</h2>
+            </section>
+            <section class="" data-id="c3b5994c28e9a3c19d7f22b5c188296a">
+                <h2>Acknowledgements</h2>
+                <div>
+                    <br>
+                </div>
+                <div>Greg Carter</div>
+                <div>Xulong Wang</div>
+                <div>Robyn Ball</div>
+                <div>
+                    <br>
+                </div>
+                <div>The Jackson Laboratory</div>
+            </section>
+        </div>
+
+
+
+
+
+        <!-- CONTENT FROM SLIDES END -->
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+        <script src="lib/js/head.min.js" type="text/javascript"></script> <script src="js/reveal.min.js" type="text/javascript"></script> <script type="text/javascript">
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                slideNumber: true,
+                history: true,
+                center: true,
+
+                theme: 'jiang', //Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Parallax scrolling
+                // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+                // parallaxBackgroundSize: '2100px 900px',
+
+                math: {
+                    // mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+                    config: 'TeX-AMS_HTML-full'
+                },
+                
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+        </script> <script src=
+        "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+        type="text/javascript"></script> 
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    </div>
+</body>
+</html>

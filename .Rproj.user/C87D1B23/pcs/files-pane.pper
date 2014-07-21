@@ -1,0 +1,9 @@
+{
+    "path" : "~/JAX/simulation/epistasis-simulation/bin/lab",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

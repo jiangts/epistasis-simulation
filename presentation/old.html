@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+<div class="slides">
+    <section class="" data-id="483437c704e34a889ebc94d7c81329ab">
+<h1>
+	<font style="font-size: 72px;"><br></font>
+</h1>
+<h1>
+	<span style="font-size: 72px;">Multivariate "cape"</span><br>
+</h1>
+<div>
+	<br>
+</div>
+<div>
+	<br>
+</div>
+<div>
+	<br>
+</div>
+<div>
+	Allan Jiang,&nbsp;<span>JAX SSP</span>
+</div>
+<div>
+	<span style="font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">July 22, 2014</span> <span><br></span>
+</div>
+<div>
+	Carter Lab Meeting
+</div>
+    </section>
+    <section class="stack" data-id="be9b8ea847fd524fdfe57f74a76a3928">
+        <section class="" data-id="b759258bb9fbb95ad9f3b2bf67ea5084">
+<h1>
+	Code
+</h1>
+<div>
+	<br>
+</div>
+<pre>
+<code data-trim="" contenteditable="">
+##      Source Target     Effect        SE |Effect|/SE P_empirical p.adjusted
+## [1,]     87     97 -1.1823088 0.1945755    6.076350           0          0
+## [2,]     25     22 -0.7936384 0.1406786    5.641502           0          0
+## [3,]     89     45 -0.9320404 0.1675941    5.561296           0          0
+## [4,]     42     45 -0.8505218 0.1616167    5.262587           0          0
+## [5,]      5     25 -0.9196543 0.1811451    5.076892           0          0
+## [6,]     68     90 -0.7551244 0.1548268    4.877221           0          0
+</code>
+</pre>
+<p>
+	<br>
+</p>
+
+</section>
+        <section class="" data-id="555d4c0386e7b5841a5a004ed1d01f54">
+           <p>
+	<img src="http://1stapple.com/blog/content/images/2014/Jul/Screenshot-2014-07-12-21-46-14.png" alt="additive model example" style="width: 410.70142078883293px; height: 660.4104439571114px; max-height: none; max-width: none;">
+</p>
+
+</section>
+        </section>
+        <section class="" data-id="37e5f8a155b30ea10633a7e258d0e2e0">
+<h2>
+	<span style="font-size: 47.43px;">Looking at the little cross dataset</span><br>
+</h2>
+<div id="preview" class="shadowbox" style="background-image: url(http://dillinger.io/);">
+	<h4 id="methods-">
+		Methods:
+	</h4>
+	<ol>
+		<li>
+			<p>
+				Used <code>cape</code> method <code>read.population</code> to load the dataset
+			</p>
+		</li>
+		<li class="fragment" data-fragment-index="0">
+			<p>
+				<span>Chose variants to analyze based off of a</span> <code>cape</code> <span>analysis. Ran the analysis, but with a small number of permutations (only 3)</span>
+			</p>
+			<p>
+				That means, we will have $\sum_{k=2}^{n}{n \choose k}k$ equations. By absorption, we know that<br>
+				$$ {n \choose k}k = \frac{n!}{k!(n-k)!}k = \frac{n!}{(k-1)!(n-1-(k-1))!} = {n-1 \choose k-1}n. $$
+			</p>
+		</li>
+	</ol>
+</div>
+
+</section>
+<section class="" data-id="376423d07c184db6034080cda8d927d2">
+    <h2>Title</h2>apple here!<div>
+        <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/515172/apple_red_1_clipart.png" style="width: 328.16056596784836px; height: 374.20293910748666px; max-height: none; max-width: none;">
+    </div>
+</section>
+<section style="left:-600px">
+	<h3>Illustration of the Additive Model</h3>
+	<iframe src="https://www.biostat.wisc.edu/~kbroman/D3/cistrans/" style="width: 1200px; height: 700px; max-height: none; max-width: none;">
+	</iframe>
+</section>
+</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+        		slideNumber: true,
+				history: true,
+				center: true,
+
+				theme: 'jiang', //Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				math: {
+					// mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+					config: 'TeX-AMS_HTML-full'
+				},
+				
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <!-- script type="text/x-mathjax-config">  
+    MathJax.Hub.Config({  
+        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+    </script-- >
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+
+	</body>
+</html>
