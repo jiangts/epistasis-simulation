@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
 
-    <title>reveal.js - The HTML Presentation Framework</title>
-    <meta content="A framework for easily creating beautiful presentations using HTML" name="description">
-    <meta content="Hakim El Hattab" name="author">
+    <title>Multivariant cape</title>
+    <meta content="Genomic Analysis to model gene-gene interactions" name="description">
+    <meta content="Allan Jiang" name="author">
     <meta content="yes" name="apple-mobile-web-app-capable">
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"name="viewport">
@@ -71,7 +71,7 @@
 		<div style="text-align: left;">
 			<ul>
 				<li style="font-size: 36.60322189331055px; font-style: normal; font-variant: normal;">
-				<b>Goal:&nbsp;</b>We want to find gene-gene interactions for complex traits in
+				<b>Goal:&nbsp;</b>We want to model gene-gene interactions for complex traits in
 					a dataset of genotype and phenotype data</li>
 			</ul>
 
@@ -181,6 +181,7 @@
 			<h2>Is it reasonable?</h2>
 			<iframe src="https://www.biostat.wisc.edu/~kbroman/D3/cistrans/" style="position: relative;left: -130px; width: 1240px; height: 700px; max-height: none; max-width: none;position: 			relative;left: -110px;">
 </iframe>
+    <!-- NOTE additivity is best for expression -->
 		</section>
 
 		<section class="" data-id="c73f31975acd31a406952968485fccd5">
@@ -194,7 +195,7 @@
 				the regression</div>
 
 			<div style="text-align: left; padding:20px">
-				$$y \sim \beta_0 + \beta_2x_1 + \beta_1x_2 + \beta_{12}x_1x_2 + \epsilon$$</div>
+				$$y \sim \beta_0 + \beta_2x_1 + \beta_2x_2 + \beta_{12}x_1x_2 + \epsilon$$</div>
 
 			<div style="text-align: left;">Then, a significant&nbsp;\(\beta_{12}\)
 				indicates the degree to which phenotype changes are explained by a strong
@@ -432,8 +433,8 @@
 
 					<ul>
 						<li class="fragment" data-fragment-index="0">
-<span>detect false positive
-							edges</span>
+<span> find other genes that better explain interactions
+							</span>
 						</li>
 
 						<li class="fragment" data-fragment-index="0">
@@ -490,7 +491,7 @@
 				\end{array} 
 				$$
 			</div>
-
+      <!-- NOTE we can do delta (21)3 and stuff and add more variables that way! -->
 			<div style="text-align: left;">
 				<div style="float:left;">
 <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/526947/three-var-true-influence.png" style="height: 250px;">
@@ -528,6 +529,7 @@
 				number of variants you can analyse – I'm currently doing 5
 				variants.
 			</div>
+      <!-- NOTE including all combinations also decreases power. So, you have both computation and statistical power constraints -->
 		</section>
 
 		<section class="" data-id="c00a034a46b6526a1c8f43a5b92c7f58">
@@ -634,6 +636,7 @@
 </section>
                 <section class="" data-id="0f629ffdb0092e10273ed17dc23c3095">
 <h2>Python Network Output:</h2>
+<!-- NOTE 32,33 and 50,51,52 are "bipartite!" They will also always have negative interactions. Choose markers on the CHR level -->
 <pre><code data-trim="" contenteditable="">&gt;&gt;&gt; net.connectivity(G)
 How many connected components?
 6
@@ -714,6 +717,7 @@ reason terminated: Relative error in the sum of squares is at most `ftol'.<br>
 </section>
             <section class="" data-id="d737447bb23f75def514b7a7f7c1699b">
                 <h2>Cross Validations</h2>
+                <!-- find percentage of samples that "cross" 0! -->
 <div>Example delta distributions:</div>
 <div class="absolute-element" style="position: absolute; width: 481px; height: 429px; z-index: 4; left: -7px; top: 150px;">
 <img src="https://s3.amazonaws.com/media-p.slid.es/uploads/jiangts/images/527420/pasted-from-clipboard.png">
@@ -763,10 +767,13 @@ reason terminated: Relative error in the sum of squares is at most `ftol'.<br>
                 <h2>todos!</h2>
 <div style="text-align: left; ">
     <ol>
-        <li>Include sex as a covariate in my analysis!</li>
+        <li>Include sex as an additive covariate in my analysis!</li>
         <li>Complete the analysis to infer significant values of delta.</li>
+        <li>Create the Network.</li>
         <li>Sensitivity analysis: why do edges sometimes flip?</li>
         <li>Compare my network/results to <code>cape</code>'s results.</li>
+        <li>Write the paper</li>
+        <li>Do the references</li>
     </ol>
 </div>
 </section>
