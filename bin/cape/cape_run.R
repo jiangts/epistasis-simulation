@@ -1,24 +1,24 @@
-setwd("~/JAX/simulation/v1.5/bin/lab/")
+setwd("~/JAX/simulation/v1.5/bin/cape")
 
 #==================================================
 # load the cape library and the example data
 #==================================================
 library("cape")
-obesity.cross <- read.population('../../data/LitxLit_F2_cleaned.csv')
+little.cross <- read.population('../../data/LitxLit_F2_cleaned.csv')
 
 
 #==================================================
 # look at the structure of the data
 #==================================================
-str(obesity.cross)
+str(little.cross)
 
 
 
 #==================================================
 # select the desired phenotypes for analysis
 #==================================================
-obesity.cross <- delete.pheno(obesity.cross, 
-                              phenotypes = c("masterID","mouseID2005", "pgm"))
+little.cross <- delete.pheno(little.cross, 
+                              phenotypes = c("masterID","mouseID2005", "pgm", "Final.IGF.1"))
 
 
 
@@ -27,7 +27,7 @@ obesity.cross <- delete.pheno(obesity.cross,
 # this function moves the variable from the 
 # phenotype matrix to the genotype matrix
 #==================================================
-obesity.cross <- create.covar(obesity.cross, c("sex", "Final.IGF.1"))
+little.cross <- create.covar(little.cross, c("sex"))
 
 
 
@@ -37,25 +37,25 @@ obesity.cross <- create.covar(obesity.cross, c("sex", "Final.IGF.1"))
 # but one is coming.
 #==================================================
 #layout(matrix(c(1:3), nrow = 1))
-#hist.data <- apply(matrix(c(1:dim(obesity.cross$pheno)[2]), nrow = 1), 2, function(x) 
-#  hist(obesity.cross$pheno[,x], main = colnames(obesity.cross$pheno)[x], 
-#       xlab = colnames(obesity.cross$pheno)[x]))
+#hist.data <- apply(matrix(c(1:dim(little.cross$pheno)[2]), nrow = 1), 2, function(x) 
+#  hist(little.cross$pheno[,x], main = colnames(little.cross$pheno)[x], 
+#       xlab = colnames(little.cross$pheno)[x]))
 
 
 #==================================================
 # mean-center the phenotypes and transform them to
 # fit a normal distribution
 #==================================================
-obesity.cross <- norm.pheno(obesity.cross, mean.center = TRUE)
+little.cross <- norm.pheno(little.cross, mean.center = TRUE)
 
 #==================================================
 # plot the distributions of the phenotypes again to
 # make sure they were normalized
 #==================================================
 #layout(matrix(c(1:3), nrow = 1))
-#hist.data <- apply(matrix(c(1:dim(obesity.cross$pheno)[2]), nrow = 1), 2, function(x) 
-#  hist(obesity.cross$pheno[,x], main = colnames(obesity.cross$pheno)[x], 
-#       xlab = colnames(obesity.cross$pheno)[x]))
+#hist.data <- apply(matrix(c(1:dim(little.cross$pheno)[2]), nrow = 1), 2, function(x) 
+#  hist(little.cross$pheno[,x], main = colnames(little.cross$pheno)[x], 
+#       xlab = colnames(little.cross$pheno)[x]))
 
 
 
@@ -66,13 +66,13 @@ obesity.cross <- norm.pheno(obesity.cross, mean.center = TRUE)
 #==================================================
 #layout(matrix(c(1:3), nrow = 1))
 #i <- 1
-#while(i < dim(obesity.cross$pheno)[2]){
+#while(i < dim(little.cross$pheno)[2]){
 #  j <- i + 1
-#  while(j <= dim(obesity.cross$pheno)[2]){
-#    plot(obesity.cross$pheno[,i], obesity.cross$pheno[,j], 
-#         xlab = colnames(obesity.cross$pheno)[i], ylab = 
-#           colnames(obesity.cross$pheno)[j], main = paste("r =", 
-#                                                          round(cor(obesity.cross$pheno[,i], obesity.cross$pheno[,j], 
+#  while(j <= dim(little.cross$pheno)[2]){
+#    plot(little.cross$pheno[,i], little.cross$pheno[,j], 
+#         xlab = colnames(little.cross$pheno)[i], ylab = 
+#           colnames(little.cross$pheno)[j], main = paste("r =", 
+#                                                          round(cor(little.cross$pheno[,i], little.cross$pheno[,j], 
 #                                                                    use = "complete.obs"), 2)), cex.lab = 1.2)
 #    j <- j + 1
 #  }
@@ -85,7 +85,7 @@ obesity.cross <- norm.pheno(obesity.cross, mean.center = TRUE)
 # use singular value decomposition to calculate 
 # eigentraits (ET).
 #==================================================
-obesity.cross <- get.eigentraits(obesity.cross, scale.pheno = FALSE,
+little.cross <- get.eigentraits(little.cross, scale.pheno = FALSE,
                                  normalize.pheno = FALSE)
 
 
@@ -95,7 +95,7 @@ obesity.cross <- get.eigentraits(obesity.cross, scale.pheno = FALSE,
 # selecting which ET will be used for the
 # analysis.
 #==================================================
-#plotSVD(obesity.cross, orientation = "vertical")
+#plotSVD(little.cross, orientation = "vertical")
 
 
 
@@ -103,7 +103,7 @@ obesity.cross <- get.eigentraits(obesity.cross, scale.pheno = FALSE,
 # select which ET will be used in the analysis
 # here we select the first and second
 #==================================================
-obesity.cross <- select.eigentraits(obesity.cross, traits.which = 1:5)
+little.cross <- select.eigentraits(little.cross, traits.which = 1:5)
 
 
 
@@ -114,16 +114,16 @@ obesity.cross <- select.eigentraits(obesity.cross, traits.which = 1:5)
 # will show up on the plot, so it's nice to set them
 # at values you care about.
 #==================================================
-obesity.cross <- singlescan(obesity.cross, n.perm = 10, covar = c("sex","Final.IGF.1"), 
-                            scan.what = "eigentraits", auto.covar.selection = FALSE, alpha.for.covar = 0.01, 
-                            alpha.for.pairs = 0.05, verbose = TRUE)
+little.cross <- singlescan(little.cross, n.perm = 10, covar = c("sex"), 
+                            scan.what = "eigentraits", alpha = c(0.01, 0.05),
+                            verbose = TRUE)
 
 
 
 #==================================================
 # plot the results of the regression
 #==================================================
-plotSinglescan(obesity.cross)
+plotSinglescan(little.cross)
 
 
 
@@ -133,8 +133,8 @@ plotSinglescan(obesity.cross)
 # markers you want to include as covariates, they
 # can be specified here.
 #==================================================
-obesity.cross <- set.covar(obesity.cross, pheno = "ET1",  
-                           markers = c("sex", "Final.IGF.1"), is.covar = TRUE, plot.covar = TRUE)
+little.cross <- set.covar(little.cross, pheno = "ET1",  
+                           markers = c("sex"), is.covar = TRUE, plot.covar = TRUE)
 
 
 #==================================================
@@ -143,7 +143,7 @@ obesity.cross <- set.covar(obesity.cross, pheno = "ET1",
 # for identical pairs of markers in addition to
 # filtering.
 #==================================================
-obesity.cross <- select.markers.for.pairscan(obesity.cross, 
+little.cross <- select.markers.for.pairscan(little.cross, 
                                              use.pairs.threshold = FALSE)
 
 
@@ -152,7 +152,7 @@ obesity.cross <- select.markers.for.pairscan(obesity.cross,
 # each marker pair with each ET and collects all 
 # the coefficients from each regression model.
 #==================================================
-obesity.cross <- pairscan(obesity.cross, scan.what = "eigentraits", 
+little.cross <- pairscan(little.cross, scan.what = "eigentraits", 
                           n.perm = 3, min.per.genotype = 6, verbose = TRUE)
 
 
@@ -161,7 +161,7 @@ obesity.cross <- pairscan(obesity.cross, scan.what = "eigentraits",
 # plot the interaction coefficients from the 
 # pairwise regression
 #==================================================
-plotPairscan(obesity.cross, standardized = TRUE)
+plotPairscan(little.cross, standardized = TRUE)
 
 
 
@@ -170,7 +170,7 @@ plotPairscan(obesity.cross, standardized = TRUE)
 # that huge effects aren't counted as significant
 # if they also have huge standard errors.
 #==================================================
-obesity.cross <- error.prop(obesity.cross, perm = FALSE, verbose = TRUE)
+little.cross <- error.prop(little.cross, perm = FALSE, verbose = TRUE)
 
 
 #==================================================
@@ -178,7 +178,7 @@ obesity.cross <- error.prop(obesity.cross, perm = FALSE, verbose = TRUE)
 # permuted data as well. This is the longest 
 # step of the whole procedure.
 #==================================================
-obesity.cross <- error.prop(obesity.cross, perm = TRUE, verbose = TRUE)
+little.cross <- error.prop(little.cross, perm = TRUE, verbose = TRUE)
 #UGH
 
 
@@ -188,14 +188,14 @@ obesity.cross <- error.prop(obesity.cross, perm = TRUE, verbose = TRUE)
 # "fdr" is less stringent than "holm." "holm" is 
 # essentially a bonferoni correction.
 #==================================================
-obesity.cross <- calc.p(obesity.cross, pval.correction = "holm")
+little.cross <- calc.p(little.cross, pval.correction = "holm")
 
 
 #==================================================
 # calculate the main effect of each marker on each
 # phenotype.
 #==================================================
-obesity.cross <- direct.influence(obesity.cross, transform.to.phenospace = TRUE, pval.correction = "holm")
+little.cross <- direct.influence(little.cross, transform.to.phenospace = TRUE, pval.correction = "holm")
 
 
 
@@ -203,7 +203,7 @@ obesity.cross <- direct.influence(obesity.cross, transform.to.phenospace = TRUE,
 # plot the results as an asymmetric matrix showing
 # source and target markers
 #==================================================
-plotVariantInfluences(obesity.cross, p.or.q = 0.05, 
+plotVariantInfluences(little.cross, p.or.q = 0.05, 
                       all.markers = FALSE, standardize = FALSE, not.tested.col = "lightgray")
 
 
@@ -211,7 +211,7 @@ plotVariantInfluences(obesity.cross, p.or.q = 0.05,
 # write a table of the of the variant-to-variant
 # influences
 #==================================================
-writeVariantInfluences(obesity.cross, p.or.q = 0.05, 
+writeVariantInfluences(little.cross, p.or.q = 0.05, 
                        filename =  "Variant.Influences.csv", delim = ",",
                        mark.covar = FALSE)
 
@@ -223,14 +223,14 @@ writeVariantInfluences(obesity.cross, p.or.q = 0.05,
 # in which the loci are collapsed into QTL based on
 # linkage between markers.
 #==================================================
-obesity.cross <- get.network(obesity.cross, p.or.q = 0.05, collapse.linked.markers = FALSE)
-obesity.cross <- get.network(obesity.cross, p.or.q = 0.05, collapse.linked.markers = TRUE)
+little.cross <- get.network(little.cross, p.or.q = 0.05, collapse.linked.markers = FALSE)
+little.cross <- get.network(little.cross, p.or.q = 0.05, collapse.linked.markers = TRUE)
 
 
 #==================================================
 # plot the networks
 #==================================================
-plotNetwork(obesity.cross, collapsed.net = FALSE)
+plotNetwork(little.cross, collapsed.net = FALSE)
 
 #==================================================
 # Unfortunately, there seems to be a bug in plotting
@@ -238,5 +238,5 @@ plotNetwork(obesity.cross, collapsed.net = FALSE)
 # as soon as possible and put up a working version
 # to use with your own data.
 #==================================================
-plotNetwork(obesity.cross, collapsed.net = TRUE)
+plotNetwork(little.cross, collapsed.net = TRUE)
 
