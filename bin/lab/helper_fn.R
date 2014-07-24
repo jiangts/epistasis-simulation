@@ -1,6 +1,115 @@
 ################ Helper Functions ################
 
 ##################################################
+# prec: list of markers to subset
+# postc: filtered marker data with all NAs removed
+##################################################
+get.relevant.markers = function(l)
+{
+  #X.anal <- X[,c(25, 22, 5, 6, 7)]
+  #X.anal <- X[,c(18,23,76,83,75)]
+  #X.anal <- X[,c(3,37)]
+  
+  #X.anal <- X[,c(32,33,50,51,52)]
+  X.anal <- X[,l]
+  idxs = which(!is.na(rowSums(X.anal)))
+  X.anal <- X.anal[idxs,]
+  Y.anal <- Y[idxs,]
+  return(list("X"=X.anal,"Y"=Y.anal))
+}
+
+##################################################
+# prec: input raw selected marker data
+# postc: return design matrix with interaction term columns
+##################################################
+get.design.mat = function(X.anal,n_v)
+{
+  for(k in 2:n_v)
+  {
+    combos <- t(combn(c(1:n_v), k))
+    combo_cols <- matrix(0, nrow=nrow(X.anal), ncol=nrow(combos))
+    for(i in 1:nrow(combos))
+    {
+      combo_cols[,i] <- matrix(apply(X.anal[,combos[i,]], 1, prod)) #rowproducts
+    }
+    X.anal <- cbind(X.anal, combo_cols)
+  }
+  return(cbind(1, X.anal))
+}
+
+##################################################
+# prec: an optimization result
+# postc: a pretty form of the delta values matrix
+##################################################
+pretty.deltas = function(res)
+{
+  print(reshape.with.diag(res$par, n_v))
+}
+
+##################################################
+# prec: create a sample CV population and calculate beta values
+# postc: TEMPORARILY mutate solve.betas. Horrible design, but I 
+#        don't know how to do it better.
+##################################################
+generate.CV.sample = function(design, cv.sample.frac)
+{
+  cv.size = ceiling(nrow(design)*cv.sample.frac)
+  cv.sample = sample(1:nrow(design), cv.size, replace = FALSE)
+  s.X = design[cv.sample,]
+  x.Y = Y[cv.sample,]
+  solve.betas <<- ginv(s.X) %*% x.Y
+  print(tail(cv.sample))
+}
+
+
+##################################################
+# prec: Input design matrix, sample size, CV sample fraction size, and maxerr
+# postc: return distribution of resulting delta values.
+##################################################
+generate.CV.distribution = function(design, cv.sample.size = 50, cv.sample.frac=.6, 
+                                    maxerr = .001)
+{
+  CV.dist = matrix(NA, 1, n_v^2-n_v)
+  for(i in 1:cv.sample.size)
+  {
+    generate.CV.sample(design, cv.sample.frac)
+    res <- lev.marq()
+    CV.dist = rbind(CV.dist, res$par)
+    if(res$deviance > maxerr)
+    {
+      cat("Warning: optimization err greater than maxerr. Sample Nu. ", i)
+    }
+  }
+  solve.betas <<- solve.all.betas
+  return(CV.dist[-1,])
+}
+
+##################################################
+# prec: input all CV distribution of delta values
+# postc: return p values of each distribution against 0
+##################################################
+get.p.values = function(data)
+{
+  a <- rep(0, ncol(data))
+  #a <- solve.lev.marq$par
+  s <- apply(data, 2, sd)
+  n <- nrow(data)
+  xbar <- apply(data, 2, mean)
+  t <- (xbar-a)/(s/sqrt(n))
+  return(2*pt(-abs(t),df=n-1))
+}
+
+
+
+
+
+
+
+
+
+
+
+##################################################
 # prec: take arbitrary mat. M and route length k
 # postc: return adj. mat. of Hamiltonian paths of length k
 ##################################################
@@ -145,14 +254,92 @@ lev.marq = function(par = rep(.5, n_v^2-n_v))
   return(nls.out)
 }
 
+################ Helper Functions ################
+
 ##################################################
 # prec: take optimized delta values
 # postc: infer interaction values m
 ##################################################
-
-infer.m = function(D){
-  I = get.I.from.A(reshape.with.diag(D, n_v))
+infer.m = function(delta_result){ ###Setting up the optimization process. Only run once.
+  I = get.I.from.A(reshape.with.diag(delta_result, n_v)) 
+  D = I[0:-n_v-1,-1] #isolate the delta sums
   
-  #total variant activity
-  tot.activity = colSums(I)[-1] #column sums and remove first entry
+  flat.combos = flatten.combos(all.combos)
+  nls.out <- nls.lm(rep(.5, n_v^2-n_v), lower=NULL, upper=NULL, delta.to.m.cost.fn.lma, jac = NULL,
+                    control = nls.lm.control())
+  return(nls.out)
 }
+
+flatten.combos = function(ac)
+{
+  ac = ac[-1] #remove 1 variant active cases.
+  out = list()
+  for(i in 1:length(ac))
+  {
+    for(j in 1:nrow(ac[[i]]))
+    {
+      out = c(out, list(ac[[i]][j,]))
+    }
+  }
+  return(out)
+}
+
+is.subset <- function(x, y) all(x %in% y)
+reshape.with.neg.one.diag <- function(unr, s) #super tricky!
+{
+  ind <- s*0:(s-1)
+  val <- c(unr, rep(-1, length(ind)))
+  id <- c(seq_along(unr), ind+0.5)
+  return(matrix(val[order(id)], s, s))
+}
+delta.to.m.cost.fn = function(M){  #OMIT ARGS D, flat.combos. Again, crap coding style
+  M = reshape.with.neg.one.diag(M, n_v)
+  
+  total.sq.err = 0
+  for(i in 1:length(flat.combos))
+  {
+    ids <- numeric()
+    for(j in 1:i) #see if previous combos are subsets and include them.
+    {
+      if(is.subset(flat.combos[[j]], flat.combos[[i]]) == TRUE)
+      {
+        ids = c(ids, j)
+      }
+    }
+    combo = flat.combos[[i]]
+    active.deltas = colSums( rbind(1, D[ids, combo]) )
+    active.m = M[combo, combo]
+    #the tricky step!
+    all.errors = t(matrix(active.deltas)) %*% active.m + 1
+    total.sq.err = total.sq.err + sum(all.errors^2)
+  }
+  return(total.sq.err)
+}
+
+
+delta.to.m.cost.fn.lma = function(M){  #OMIT ARGS D, flat.combos. Again, crap coding style
+  M = reshape.with.neg.one.diag(M, n_v)
+  
+  all.err.values = c()
+  for(i in 1:length(flat.combos))
+  {
+    ids <- numeric()
+    for(j in 1:i) #see if previous combos are subsets and include them.
+    {
+      if(is.subset(flat.combos[[j]], flat.combos[[i]]) == TRUE)
+      {
+        ids = c(ids, j)
+      }
+    }
+    combo = flat.combos[[i]]
+    active.deltas = colSums( rbind(1, D[ids, combo]) )
+    active.m = M[combo, combo]
+    #the tricky step!
+    all.errors = t(matrix(active.deltas)) %*% active.m + 1
+    all.err.values = c(all.err.values, all.errors)
+  }
+  print(length(all.err.values))
+  return(all.err.values)
+}
+
+
