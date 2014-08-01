@@ -1,0 +1,30 @@
+\begin{thebibliography}{1}
+
+\bibitem{avery1992ordering}
+Leon Avery and Steven Wasserman.
+\newblock Ordering gene function: the interpretation of epistasis in regulatory
+  hierarchies.
+\newblock {\em Trends in genetics}, 8(9):312--316, 1992.
+
+\bibitem{boone2007}
+Charles Boone, Howard Bussey, and Brenda~J Andrews.
+\newblock Exploring genetic interactions and networks with yeast.
+\newblock {\em Nature Reviews Genetics}, 8(6):437--449, 2007.
+
+\bibitem{carter2013fly}
+Gregory~W Carter.
+\newblock Inferring gene function and network organization in drosophila
+  signaling by combined analysis of pleiotropy and epistasis.
+\newblock {\em G3: Genes| Genomes| Genetics}, 3(5):807--814, 2013.
+
+\bibitem{carter2012yeast}
+Gregory~W Carter, Michelle Hays, Amir Sherman, and Timothy Galitski.
+\newblock Use of pleiotropy to model genetic interactions in a population.
+\newblock {\em PLoS genetics}, 8(10):e1003010, 2012.
+
+\bibitem{tyler2013cape}
+Anna~L Tyler, Wei Lu, Justin~J Hendrick, Vivek~M Philip, and Gregory~W Carter.
+\newblock Cape: An r package for combined analysis of pleiotropy and epistasis.
+\newblock {\em PLoS computational biology}, 9(10):e1003270, 2013.
+
+\end{thebibliography}
