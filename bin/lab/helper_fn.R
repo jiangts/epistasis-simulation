@@ -6,11 +6,6 @@
 ##################################################
 get.relevant.markers = function(l)
 {
-  #X.anal <- X[,c(25, 22, 5, 6, 7)]
-  #X.anal <- X[,c(18,23,76,83,75)]
-  #X.anal <- X[,c(3,37)]
-  
-  #X.anal <- X[,c(32,33,50,51,52)]
   X.anal <- X[,l]
   idxs = which(!is.na(rowSums(X.anal)))
   X.anal <- X.anal[idxs,]
@@ -46,6 +41,25 @@ pretty.deltas = function(res)
   print(reshape.with.diag(res$par, n_v))
 }
 
+##############################
+##############################
+##################################################
+# prec: create a sample CV population and calculate beta values
+# postc: TEMPORARILY mutate solve.betas. Horrible design, but I 
+#        don't know how to do it better.
+##################################################
+generate.CV.sample.old = function(design, cv.sample.frac)
+{
+  cv.size = ceiling(nrow(design)*cv.sample.frac)
+  cv.sample = sample(1:nrow(design), cv.size, replace = FALSE)
+  s.X = design[cv.sample,]
+  x.Y = Y[cv.sample,]
+  solve.betas <<- ginv(s.X) %*% x.Y
+  #print(tail(cv.sample))
+} ##############################
+##############################
+##############################
+
 ##################################################
 # prec: create a sample CV population and calculate beta values
 # postc: TEMPORARILY mutate solve.betas. Horrible design, but I 
@@ -57,10 +71,9 @@ generate.CV.sample = function(design, cv.sample.frac)
   cv.sample = sample(1:nrow(design), cv.size, replace = FALSE)
   s.X = design[cv.sample,]
   x.Y = Y[cv.sample,]
-  solve.betas <<- ginv(s.X) %*% x.Y
-  print(tail(cv.sample))
+  beta.sex.covar = ginv(s.X) %*% x.Y
+  solve.betas <<- beta.sex.covar[-(nrow(beta.sex.covar)),]
 }
-
 
 ##################################################
 # prec: Input design matrix, sample size, CV sample fraction size, and maxerr
@@ -73,7 +86,8 @@ generate.CV.distribution = function(design, cv.sample.size = 50, cv.sample.frac=
   for(i in 1:cv.sample.size)
   {
     generate.CV.sample(design, cv.sample.frac)
-    res <- lev.marq()
+    #res <- lev.marq()
+    res <- infer.m(lev.marq()$par)
     CV.dist = rbind(CV.dist, res$par)
     if(res$deviance > maxerr)
     {
@@ -84,23 +98,94 @@ generate.CV.distribution = function(design, cv.sample.size = 50, cv.sample.frac=
   return(CV.dist[-1,])
 }
 
+
+#######################################################
+#######################################################
+# Screw it, I'm doing permutation tests!
+
+##################################################
+# prec: create a sample CV population and calculate beta values
+# postc: TEMPORARILY mutate solve.betas. Horrible design, but I 
+#        don't know how to do it better.
+##################################################
+generate.perm.sample = function(design)
+{
+  s.X = design[sample(nrow(design)),]
+  beta.sex.covar = ginv(s.X) %*% Y
+  solve.betas <<- beta.sex.covar[-(nrow(beta.sex.covar)),]
+}
+
+##################################################
+# prec: Input design matrix, sample size, CV sample fraction size, and maxerr
+# postc: return distribution of resulting delta values.
+##################################################
+generate.perm.distribution = function(design, perm.sample.size = 50, 
+                                    maxerr = .001)
+{
+  perm.dist = matrix(NA, 1, n_v^2-n_v)
+  for(i in 1:perm.sample.size)
+  {
+    generate.perm.sample(design)
+    #res <- lev.marq()
+    res <- infer.m(lev.marq()$par)
+    perm.dist = rbind(perm.dist, res$par)
+    if(res$deviance > maxerr)
+    {
+      cat("Warning: optimization err greater than maxerr. Sample Nu. ", i)
+    }
+  }
+  solve.betas <<- solve.all.betas
+  return(perm.dist[-1,])
+}
+
+
+#######################################################
+#######################################################
+
+
+
+
+
+
+
 ##################################################
 # prec: input all CV distribution of delta values
 # postc: return p values of each distribution against 0
 ##################################################
-get.p.values = function(data)
+get.p.values = function(data, a = rep(0, ncol(data)))
 {
-  a <- rep(0, ncol(data))
   #a <- solve.lev.marq$par
   s <- apply(data, 2, sd)
   n <- nrow(data)
-  xbar <- apply(data, 2, mean)
+  xbar <- colMeans(data)
   t <- (xbar-a)/(s/sqrt(n))
   return(2*pt(-abs(t),df=n-1))
 }
 
-
-
+##################################################
+# prec: input all CV distribution of delta values
+# postc: return "bad occurrences" of data
+##################################################
+# a "bad occurrence" is a sample that goes against the story told by our distribution.
+# so, if our distribution says them mean is 2, but 1/3 of the samples are <=0, we have lots of
+# bad occurrences.
+get.bad.occurrences = function(data, ref = 0)
+{
+  xbar = colMeans(data)
+  gtRef = colSums(data >= ref)
+  ltRef = colSums(data <= ref)
+  out = matrix(NA, 1, ncol(data))
+  for(i in 1:length(xbar))
+  {
+    if(xbar[i] > ref){
+      out[i] = ltRef[i]
+    }
+    if(xbar[i] < ref){
+      out[i] = gtRef[i]
+    }
+  }
+  return(out)
+}
 
 
 
@@ -260,13 +345,14 @@ lev.marq = function(par = rep(.5, n_v^2-n_v))
 # prec: take optimized delta values
 # postc: infer interaction values m
 ##################################################
-infer.m = function(delta_result){ ###Setting up the optimization process. Only run once.
+infer.m = function(delta_result){
   I = get.I.from.A(reshape.with.diag(delta_result, n_v)) 
-  D = I[0:-n_v-1,-1] #isolate the delta sums
+  Deltas <<- I[0:-n_v-1,-1] #isolate the delta sums
   
-  flat.combos = flatten.combos(all.combos)
+  flat.combos <<- flatten.combos(all.combos)
   nls.out <- nls.lm(rep(.5, n_v^2-n_v), lower=NULL, upper=NULL, delta.to.m.cost.fn.lma, jac = NULL,
                     control = nls.lm.control())
+  #m.res <- optim(rep(.5, n_v^2-n_v), delta.to.m.cost.fn, NULL, method = "BFGS")
   return(nls.out)
 }
 
@@ -292,7 +378,7 @@ reshape.with.neg.one.diag <- function(unr, s) #super tricky!
   id <- c(seq_along(unr), ind+0.5)
   return(matrix(val[order(id)], s, s))
 }
-delta.to.m.cost.fn = function(M){  #OMIT ARGS D, flat.combos. Again, crap coding style
+delta.to.m.cost.fn = function(M){  #OMIT ARGS Deltas, flat.combos. Again, crap coding style
   M = reshape.with.neg.one.diag(M, n_v)
   
   total.sq.err = 0
@@ -307,7 +393,7 @@ delta.to.m.cost.fn = function(M){  #OMIT ARGS D, flat.combos. Again, crap coding
       }
     }
     combo = flat.combos[[i]]
-    active.deltas = colSums( rbind(1, D[ids, combo]) )
+    active.deltas = colSums( rbind(1, Deltas[ids, combo]) )
     active.m = M[combo, combo]
     #the tricky step!
     all.errors = t(matrix(active.deltas)) %*% active.m + 1
@@ -317,7 +403,7 @@ delta.to.m.cost.fn = function(M){  #OMIT ARGS D, flat.combos. Again, crap coding
 }
 
 
-delta.to.m.cost.fn.lma = function(M){  #OMIT ARGS D, flat.combos. Again, crap coding style
+delta.to.m.cost.fn.lma = function(M){  #OMIT ARGS Deltas, flat.combos. Again, crap coding style
   M = reshape.with.neg.one.diag(M, n_v)
   
   all.err.values = c()
@@ -332,13 +418,13 @@ delta.to.m.cost.fn.lma = function(M){  #OMIT ARGS D, flat.combos. Again, crap co
       }
     }
     combo = flat.combos[[i]]
-    active.deltas = colSums( rbind(1, D[ids, combo]) )
+    active.deltas = colSums( rbind(1, Deltas[ids, combo]) )
     active.m = M[combo, combo]
     #the tricky step!
     all.errors = t(matrix(active.deltas)) %*% active.m + 1
     all.err.values = c(all.err.values, all.errors)
   }
-  print(length(all.err.values))
+  #print(length(all.err.values))
   return(all.err.values)
 }
 

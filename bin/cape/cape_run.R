@@ -18,7 +18,7 @@ str(little.cross)
 # select the desired phenotypes for analysis
 #==================================================
 little.cross <- delete.pheno(little.cross, 
-                              phenotypes = c("masterID","mouseID2005", "pgm", "Final.IGF.1"))
+                             phenotypes = c("masterID","mouseID2005", "pgm", "Final.IGF.1"))
 
 
 
