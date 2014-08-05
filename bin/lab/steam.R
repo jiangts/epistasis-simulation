@@ -45,16 +45,17 @@ solve.m.vals <- infer.m(solve.lev.marq$par)
 #[2,] -0.3059209  0.0000000 -1.106612
 #[3,]  0.4784661 -0.1887149  0.000000  cost: 0.0007612
 
-distrib.size = 30
+distrib.size = 5000
 
 #CV.dist = generate.CV.distribution(design, maxerr=.25, cv.sample.size = distrib.size, cv.sample.frac=.8)
-perm.dist = generate.perm.distribution(design, maxerr=.25, perm.sample.size = distrib.size)
+perm.dist = generate.perm.distribution(design, maxerr=70, perm.sample.size = distrib.size)
 
 #p.values = get.p.values(CV.dist)
 p.values = get.p.values(perm.dist, solve.m.vals$par)
 #TODO: instead of assuming a t distribution, get percentage of values past 0. 
 #It's pretty cheap to get examples.
-number.bad = get.bad.occurrences(CV.dist)
+#number.bad = get.bad.occurrences(CV.dist)
+number.bad = get.bad.perm.occurrences(perm.dist, solve.m.vals$par)
 p.vals = number.bad / distrib.size
 
 print(p.vals)

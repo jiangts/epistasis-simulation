@@ -104,13 +104,28 @@ generate.CV.distribution = function(design, cv.sample.size = 50, cv.sample.frac=
 # Screw it, I'm doing permutation tests!
 
 ##################################################
+# prec: data
+# postc: permute each column of data separately
+##################################################
+permuteData = function(data) {
+  for(i in 1:ncol(data)){
+    data[,i] = data[sample(nrow(data)),i]
+  }
+  return(data)
+}
+
+##################################################
 # prec: create a sample CV population and calculate beta values
 # postc: TEMPORARILY mutate solve.betas. Horrible design, but I 
 #        don't know how to do it better.
 ##################################################
 generate.perm.sample = function(design)
 {
-  s.X = design[sample(nrow(design)),]
+  #don't permute the sex covar with it! ugh
+  sex.orig.ordering = design[,"sex"]
+  s.X = permuteData(design)
+  #s.X = design[sample(nrow(design)),]
+  s.X[,"sex"]=sex.orig.ordering
   beta.sex.covar = ginv(s.X) %*% Y
   solve.betas <<- beta.sex.covar[-(nrow(beta.sex.covar)),]
 }
@@ -131,7 +146,8 @@ generate.perm.distribution = function(design, perm.sample.size = 50,
     perm.dist = rbind(perm.dist, res$par)
     if(res$deviance > maxerr)
     {
-      cat("Warning: optimization err greater than maxerr. Sample Nu. ", i)
+      cat("\nWarning: ", res$deviance, 
+          " = opt err > maxerr = ", maxerr, ". Sample Nu. ", i)
     }
   }
   solve.betas <<- solve.all.betas
@@ -187,7 +203,31 @@ get.bad.occurrences = function(data, ref = 0)
   return(out)
 }
 
-
+##################################################
+# prec: input all CV distribution of delta values
+# postc: return "bad occurrences" of data
+##################################################
+# a "bad occurrence" is a sample that goes against the story told by our distribution.
+# so, if our distribution says them mean is 2, but 1/3 of the samples are <=0, we have lots of
+# bad occurrences.
+get.bad.perm.occurrences = function(data, mean)
+{
+  out = matrix(NA, 1, ncol(data))
+  xbar = colMeans(data)
+  for(i in 1:length(mean))
+  {
+    gtRef = colSums(data >= mean[i])
+    ltRef = colSums(data <= mean[i])
+  
+    if(xbar[i] > mean[i]){
+      out[i] = ltRef[i]
+    }
+    if(xbar[i] < mean[i]){
+      out[i] = gtRef[i]
+    }
+  }
+  return(out)
+}
 
 
 
