@@ -143,11 +143,12 @@ generate.perm.distribution = function(design, perm.sample.size = 50,
     generate.perm.sample(design)
     #res <- lev.marq()
     res <- infer.m(lev.marq()$par)
-    perm.dist = rbind(perm.dist, res$par)
     if(res$deviance > maxerr)
     {
       cat("\nWarning: ", res$deviance, 
           " = opt err > maxerr = ", maxerr, ". Sample Nu. ", i)
+    } else {
+      perm.dist = rbind(perm.dist, res$par)
     }
   }
   solve.betas <<- solve.all.betas
@@ -175,6 +176,7 @@ get.p.values = function(data, a = rep(0, ncol(data)))
   n <- nrow(data)
   xbar <- colMeans(data)
   t <- (xbar-a)/(s/sqrt(n))
+  cat("t values are: ", t)
   return(2*pt(-abs(t),df=n-1))
 }
 
@@ -385,12 +387,12 @@ lev.marq = function(par = rep(.5, n_v^2-n_v))
 # prec: take optimized delta values
 # postc: infer interaction values m
 ##################################################
-infer.m = function(delta_result){
+infer.m = function(delta_result, par = rep(.5, n_v^2-n_v)){
   I = get.I.from.A(reshape.with.diag(delta_result, n_v)) 
   Deltas <<- I[0:-n_v-1,-1] #isolate the delta sums
   
   flat.combos <<- flatten.combos(all.combos)
-  nls.out <- nls.lm(rep(.5, n_v^2-n_v), lower=NULL, upper=NULL, delta.to.m.cost.fn.lma, jac = NULL,
+  nls.out <- nls.lm(par, lower=NULL, upper=NULL, delta.to.m.cost.fn.lma, jac = NULL,
                     control = nls.lm.control())
   #m.res <- optim(rep(.5, n_v^2-n_v), delta.to.m.cost.fn, NULL, method = "BFGS")
   return(nls.out)

@@ -28,6 +28,13 @@ for comp in nx.connected_components(UG):
   G_comp.append(G.subgraph(comp))
 """
 
+def getEdge(a, b):
+  for edge in edges:
+    if edge[0] == a and edge[1] == b:
+      print edge
+    if edge[0] == b and edge[1] == a:
+      print edge
+
 ### Remove degree 1 nodes. Not necessarily useful.
 """
 deg = UG.degree()
